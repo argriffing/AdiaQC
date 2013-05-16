@@ -10,6 +10,7 @@ Description: Simulate quantum annealing with some technique.
 import os
 import scipy as sp
 from scipy import linalg
+import scipy.sparse.linalg
 
 import output
 
@@ -47,8 +48,7 @@ def ExpPert(nQubits, alpha, beta, delta, Psi, T, dt, errchk, eps, outinfo):
         Hexp = 1/(2*T)*((t**2 - t0**2)*(-alpha - beta) - \
                          (2*T*(t - t0) + t0**2 - t**2)*delta)
 
-        A = linalg.expm(-1j*Hexp)
-        Psi = A*Psi
+        Psi = scipy.sparse.linalg.expm_multiply(-1j*Hexp, Psi)
 
         # Get eigendecomposition of true Hamiltonian if necessary
         if (errchk | outinfo['eigdat'] | outinfo['eigplot'] \
